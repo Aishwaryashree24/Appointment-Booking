@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fusion Green Form</title>
+
+    <link rel="stylesheet" href="Assets\css\bootstrap.min.css" />
+    <link rel="stylesheet" href="Assets\css\bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="Assets\css\font-awesome.min.css" />
+    <link rel="stylesheet" href="Assets\css\jquery-ui.css" />
+    <link rel="stylesheet" href="Assets\css\jquery-ui-timepicker-addon.min.css" />
+
+    <style>
+        .time-picker {
+            position: relative;
+        }
+
+        .time-picker-dropdown {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            z-index: 1000;
+            width: max-content;
+        }
+
+        .time-section {
+            display: inline-block;
+            text-align: center;
+            margin: 0 5px;
+        }
+
+        .arrow-up,
+        .arrow-down {
+            display: block;
+            cursor: pointer;
+        }
+
+        #hours,
+        #minutes,
+        #seconds {
+            display: block;
+            font-size: 18px;
+            margin: 5px 0;
+        }
+
+        .am-pm-toggle {
+            display: inline-block;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: #15e13e;
+            border: 1px solid #4fba6e;
+            margin-left: 10px;
+        }
+
+
+
+        .custom-input {
+            box-shadow: 0 0 4px rgba(41, 150, 41, 0.967);
+        }
+
+        .custom-input:focus {
+            box-shadow: 0 0 10px rgba(41, 150, 41, 0.967);
+            border-color: rgba(41, 150, 41, 0.967);
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(34, 176, 70, 0.996);
+        }
+
+
+        .bg-form-container {
+            background: url('Assets/image/bg_ayurvedic.jpeg') no-repeat center center;
+            background-size: cover;
+            height: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .custom-checkbox .custom-control-input:checked~.custom-control-label::before {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+
+        .ui-datepicker {
+            background: #d6eed7;
+            border: 1px solid #4caf50;
+        }
+
+        .ui-datepicker-header {
+            background: #223622;
+            color: #fff;
+            position: relative;
+            /* Added to position arrows */
+        }
+
+        .ui-datepicker .ui-datepicker-title {
+            color: #fff;
+        }
+
+        .ui-datepicker .ui-state-default {
+            background: #9eeea9;
+            border-color: #4caf50;
+        }
+
+        .ui-datepicker .ui-state-hover,
+        .ui-datepicker .ui-state-active,
+        .ui-datepicker .ui-state-highlight {
+            background: #99dfaf;
+            border-color: #4caf50;
+            color: #383030;
+        }
+
+        .ui-datepicker-prev,
+        .ui-datepicker-next {
+            position: absolute;
+            top: 50%;
+            width: 30px;
+            height: 30px;
+            background: #22672d;
+            border: 1px solid #231d1d;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            cursor: pointer;
+            color: #e1fce2;
+        }
+
+        .ui-datepicker-prev {
+            left: 10px;
+        }
+
+        .ui-datepicker-next {
+            right: 10px;
+        }
+
+        .ui-datepicker-prev::before,
+        .ui-datepicker-next::before {
+            content: '\2039';
+            font-family: Arial, sans-serif;
+        }
+
+        .ui-datepicker-next::before {
+            content: '\203A';
+        }
+
+
+
+        .product-card {
+            display: inline-block;
+            padding: 10px;
+            margin: 5px;
+
+            background-color: #158b42;
+            border-color: #155724;
+            color: rgb(241, 249, 243);
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .product-card.selected {
+            border: 1px solid #60f783;
+            color: rgb(18, 10, 10);
+            border-radius: 5px;
+            background-color: #7fe794;
+        }
+
+        .accordion-button.active {
+            background-color: #277c1c;
+            border-color: #155724;
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="bg-form-container align-items-center justify-content-center">
+    <div class="container">
+        <div class="form-container my-2 bg-white p-4 rounded">
+            <div class="text-center">
+                <img src="Assets\image\new_logo.png" width="350px" alt="Form Header" class="img-fluid ">
+                <hr>
+            </div>
+
+            <h5 class=" my-4 text-success text-center">Product Appointment</h5>
+            <form id="validationForm" action="/send_mail" method="POST">
+
+                <div class="mt-2 row">
+                    <div class="col-3 col-md-3 col-sm-3">
+                        <select class="form-select custom-input" id="title" name="title" required>
+                            <option selected>Mr.</option>
+                            <option>Mrs.</option>
+                            <option>Miss.</option>
+                        </select>
+                    </div>
+                    <div class="col-9 col-md-9 col-sm-9">
+                        <input type="text" class="form-control custom-input" name="name" id="name" placeholder="Name">
+                        <span id="name-error" style="color:red;"></span>
+                    </div>
+                </div>
+
+                <div class="my-4 text-center justify-content-center d-flex">
+                    <div class="col-auto">
+                        <div class="form-check ">
+                            <input class="form-check-input custom-input" type="radio" name="occupation" id="company"
+                                value="Company">
+                            <label class="form-check-label me-2" for="company">Company</label>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-check">
+                            <input class="form-check-input custom-input" type="radio" name="occupation" id="hospital"
+                                value="Hospital">
+                            <label class="form-check-label me-2" for="hospital">Hospital</label>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-check">
+                            <input class="form-check-input custom-input" type="radio" name="occupation" id="laboratory"
+                                value="Laboratory">
+                            <label class="form-check-label me-2" for="laboratory">Laboratory</label>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-check">
+                            <input class="form-check-input custom-input" type="radio" name="occupation" id="others"
+                                value="Others">
+                            <label class="form-check-label me-2" for="others">Others</label>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-12 mb-4">
+                    <input  class="form-control custom-input " type="text" id="specify" placeholder="Occupation" disabled>
+                </div>
+
+                <div class="col-12 mb-4">
+                    <input type="text" class="form-control custom-input" id="mobile" name="mobile" placeholder="Mobile"
+                        maxlength="10" minlength="10">
+                    <span id="mobile-error" style="color:red;"></span>
+                </div>
+
+                <div class="col-12 mb-4">
+                    <input type="email" class="form-control custom-input" id="email" name="email" placeholder="Email">
+                    <span id="email-error" style="color:red;"></span>
+                </div>
+
+                <div class="col-12 mb-4">
+                    <select class="form-select custom-input col-12" id="productInterest" name="productInterest">
+                        <option selected>--- Product Interest ---</option>
+                        <option value="Fusion Green Health Care">Fusion Green Health Care</option>
+                        <option value="Mindray">Mindray</option>
+                        <option value="Mission Acon">Mission ACON</option>
+                        <option value="Akray">Akray</option>
+                        <option value="Thermofisher">Thermofisher</option>
+                        <option value="ALIFAX">Alifax</option>
+                        <option value="Immunoshop">Immunoshop</option>
+                        <option value="PTS Diagnostics">PTS Diagnostics</option>
+                        <option value="Bio System">Bio System</option>
+                        <option value="Perkin Elmer">Perkin Elmer</option>
+                        <option value="DiaSorin">DiaSorin</option>
+
+                    </select>
+                </div>
+
+                <div class="container mt-5">
+                    <h5 class="mb-3 text-success">Department</h5>
+                    <div class="accordion" id="departmentsAccordion"></div>
+
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-sm-6 d-flex align-items-center">
+                            <div class="form-group w-100">
+                                <h5 class="text-success mb-3">Date</h5>
+                                <input type="text" class="form-control custom-input" placeholder="MM/DD/YY"
+                                    name="appointmentDate" id="my_date_picker">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 col-sm-6 d-flex align-items-center">
+                            <div class="form-group w-100">
+                                <h5 class="text-success mb-3">Time</h5>
+                                <div class="d-flex align-items-center">
+                                    <input class="form-control custom-input" type="text" name="appointmentTime"
+                                        id="timeInput" readonly>
+                                    <div class="time-picker-dropdown text-center ml-3" id="timePickerDropdown">
+                                        <div class="time-section">
+                                            <span class="arrow-up text-success"
+                                                onclick="incrementHours()">&#9650;</span>
+                                            <span id="hours">00</span>
+                                            <span class="arrow-down text-success"
+                                                onclick="decrementHours()">&#9660;</span>
+                                        </div>
+                                        <span>:</span>
+                                        <div class="time-section">
+                                            <span class="arrow-up text-success"
+                                                onclick="incrementMinutes()">&#9650;</span>
+                                            <span id="minutes">00</span>
+                                            <span class="arrow-down text-success"
+                                                onclick="decrementMinutes()">&#9660;</span>
+                                        </div>
+                                        <span>:</span>
+                                        <div class="time-section">
+                                            <span class="arrow-up text-success"
+                                                onclick="incrementSeconds()">&#9650;</span>
+                                            <span id="seconds">00</span>
+                                            <span class="arrow-down text-success"
+                                                onclick="decrementSeconds()">&#9660;</span>
+                                        </div>
+                                        <div class="am-pm-toggle" onclick="toggleAmPm()" id="amPmToggle">AM</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 text-center">
+                    <button type="submit" class="btn btn-success mt-4 ">Make Appointment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+    <script src="Assets\js\bootstrap.min.js"></script>
+    <script src="Assets\js\bootstrapdatepicker.min.js"></script>
+    <script src="Assets\js\jquery.min.js"></script>
+    <script src="Assets\js\moment.min.js"></script>
+    <script src="Assets\js\popper.min.js"></script>
+
+    <script src="Assets\js\jquery-ui.min.js"></script>
+    <script src="Assets\js\jquery-ui-timepicker-addon.min.js"></script>
+
+    <script>
+        document.getElementById('productInterest').addEventListener('change', function (e) {
+            e.preventDefault();
+            var departmentsAccordion = document.getElementById('departmentsAccordion');
+            departmentsAccordion.innerHTML = '';
+            
+
+            var productsData = {
+                "Fusion Green Health Care": {
+                    "Biochemistry": ["FG-2021 Semi Analyzer", "FGBC-22 Fully Auto"],
+                    "Hematology": ["FG-21D"]
+                },
+                "Mindray": {
+                    "Biochemistry": ["BS-230", "BS-240E", "BS-430", "BS-600M"],
+                    "Hematology": ["BC-700", "BC-720", "BC-760", "BC-780", "BC-6000", "BC-6200"],
+                    "Immunology": ["CL960I"]
+                },
+                "Mission Acon": {
+                    "Clinical Urinalysis": ["Mission U120 Smart Analyser", "Mission U500 Urine Analyser"]
+                },
+                "Akray": {
+                    "Biochemistry": ["HbA1c Analyst", "HA-8180V", "HA 8380V", "HA - 8180T"],
+                    "Point of Care": ["Blood Ammonia pa-4140", "Electrolyte se 1520"]
+                },                
+                "Thermofisher": {
+                    "Biochemistry": ["Indiko Analyser", "Indiko plus Analyser"],
+                    "Microbiology": ["Phadia 200 and Phaidia 250 Analyser", "Sonsititre Nephelometer", "Sonsititre ARTS 20 System", "Sonsititre AIM Automoded Inoculation"],
+                    "Delivery System": ["Sensititre Opti Read", "Sensititre Vizion Digital Mic Viewing System"]
+                },
+                "ALIFAX": {
+                    "Hematology": ["ESR Roller 20 MC", "ESR Roller 20 LC"],
+                    "Clinical Urinalysis":[]
+                },
+                "Immunoshop": {
+                    "Biochemistry": ["Gpp 100 protin Analyser", "Nepholometer Analyze"]
+                },
+                "PTS Diagnostics": {
+                    "Point of Care": ["I core 2100", "Cardiochek Plus", "AIC NOW +", "Glucometers"]
+                },
+                "Bio System": {
+                    "Biochemistry": ["E60 Electrolyte Analyzer"],
+                    // "Clinical Urinalysis": ["Cobio S50 Analyzer"],
+                    // "Point of Care": ["Blood Ammonia PA-4140", "Electrolyte SE 1520"]
+                },
+                "Perkin Elmer": {
+                    "Speciality": ["Auto Delfia Analyser", "Deffia Analyser", "Victor 2D Analyser", "Delfia Express Analyser"]
+                },
+                "DiaSorin": {
+                    "Immunology": ["Liaison XL Analyser"]
+                }
+            };
+            
+            var selectedProduct = this.value;
+            if (productsData[selectedProduct]) {
+                var departments = productsData[selectedProduct];
+                for (var department in departments) {
+                    if (departments.hasOwnProperty(department)) {
+                        addDepartment(department, departments[department]);
+                    }
+                }
+            }
+        });
+        
+        function addDepartment(name, products) {
+            var accordionItem = document.createElement('div');
+            accordionItem.className = 'accordion-item';
+            
+            var accordionHeader = document.createElement('h2');
+            accordionHeader.className = 'accordion-header';
+            accordionHeader.id = 'heading' + name.replace(/\s+/g, '');
+
+            var accordionButton = document.createElement('button');
+            accordionButton.className = 'accordion-button collapsed';
+            accordionButton.type = 'button';
+            accordionButton.setAttribute('data-bs-toggle', 'collapse');
+            accordionButton.setAttribute('data-bs-target', '#collapse' + name.replace(/\s+/g, ''));
+            accordionButton.setAttribute('aria-expanded', 'false');
+            accordionButton.setAttribute('aria-controls', 'collapse' + name.replace(/\s+/g, ''));
+            accordionButton.textContent = name;
+            
+            accordionButton.addEventListener('click', function () {
+                this.classList.toggle('active');
+                
+            });
+            
+            var accordionCollapse = document.createElement('div');
+            accordionCollapse.id = 'collapse' + name.replace(/\s+/g, '');
+            accordionCollapse.className = 'accordion-collapse collapse';
+            accordionCollapse.setAttribute('aria-labelledby', 'heading' + name.replace(/\s+/g, ''));
+            accordionCollapse.setAttribute('data-bs-parent', '#departmentsAccordion');
+            
+            var accordionBody = document.createElement('div');
+            accordionBody.className = 'accordion-body';
+            
+
+            var productsDiv = document.createElement('div');
+            productsDiv.className = 'products';
+
+            products.forEach(function (product, index) {
+                var productDiv = document.createElement('div');
+                productDiv.className = 'form-check product-card';
+                productDiv.tabIndex = 0;
+
+                var checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = 'product' + index;
+                checkbox.name = 'products';
+                checkbox.value = product;
+                checkbox.style.display = 'none';
+
+                var label = document.createElement('label');
+                label.className = 'form-check-label';
+                label.htmlFor = 'product' + index;
+                label.textContent = product;
+
+                productDiv.appendChild(checkbox);
+                productDiv.appendChild(label);
+
+                productDiv.addEventListener('click', function () {
+                    checkbox.checked = !checkbox.checked;
+                    productDiv.classList.toggle('selected', checkbox.checked);
+                });
+
+                productsDiv.appendChild(productDiv);
+            });
+
+            accordionBody.appendChild(productsDiv);
+            accordionCollapse.appendChild(accordionBody);
+            accordionHeader.appendChild(accordionButton);
+            accordionItem.appendChild(accordionHeader);
+            accordionItem.appendChild(accordionCollapse);
+
+            var departmentsAccordion = document.getElementById('departmentsAccordion');
+            departmentsAccordion.appendChild(accordionItem);
+        }
+    </script>
+    <style>
+
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var nameInput = document.getElementById('name');
+            var mobileInput = document.getElementById('mobile');
+            var emailInput = document.getElementById('email');
+            var form = document.getElementById('validationForm');
+
+            var nameError = document.getElementById('name-error');
+            var mobileError = document.getElementById('mobile-error');
+            var emailError = document.getElementById('email-error');
+
+            nameInput.addEventListener('keyup', validateName);
+            mobileInput.addEventListener('keyup', validateMobile);
+            emailInput.addEventListener('keyup', validateEmail);
+
+            form.addEventListener('submit', function (event) {
+                if (!validateName() || !validateMobile() || !validateEmail()) {
+                    event.preventDefault();
+                }
+            });
+
+            function validateName() {
+                var name = nameInput.value;
+                var nameRegex = /^[A-Za-z\s]+$/;
+
+                if (!nameRegex.test(name)) {
+                    nameError.textContent = "Invalid name. Only letters and spaces are allowed.";
+                    return false;
+                } else if (name.trim() === "") {
+                    nameError.textContent = "Name cannot be empty.";
+                    return false;
+                } else {
+                    nameError.textContent = "";
+                    return true;
+                }
+            }
+
+            function validateMobile() {
+                var mobile = mobileInput.value;
+                var mobileRegex = /^[0-9]{10}$/;
+
+                if (!mobileRegex.test(mobile)) {
+                    mobileError.textContent = "Invalid mobile number. It should be exactly 10 digits.";
+                    return false;
+                } else {
+                    mobileError.textContent = "";
+                    return true;
+                }
+            }
+
+            function validateEmail() {
+                var email = emailInput.value;
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (!emailRegex.test(email)) {
+                    emailError.textContent = "Invalid email address.";
+                    return false;
+                } else {
+                    emailError.textContent = "";
+                    return true;
+                }
+            }
+        });
+
+        $(document).ready(function () {
+            $("#my_date_picker").datepicker({
+                minDate: 0,
+                dateFormat: 'mm/dd/yy'
+            });
+
+
+        });
+        document.getElementById('timeInput').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('timePickerDropdown').style.display = 'block';
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!document.getElementById('timePickerDropdown').contains(e.target) &&
+                !document.getElementById('timeInput').contains(e.target)) {
+                document.getElementById('timePickerDropdown').style.display = 'none';
+            }
+        });
+
+        let hours = 0;
+        let minutes = 0;
+        let seconds = 0;
+        let isAm = true;
+
+        function formatNumber(number) {
+            return number < 10 ? '0' + number : number;
+        }
+
+        function updateInput() {
+            document.getElementById('timeInput').value = `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(seconds)} ${isAm ? 'AM' : 'PM'}`;
+        }
+
+        function incrementHours() {
+            hours = (hours % 12) + 1;
+            document.getElementById('hours').textContent = formatNumber(hours);
+            updateInput();
+        }
+
+        function decrementHours() {
+            hours = (hours - 1) || 12;
+            document.getElementById('hours').textContent = formatNumber(hours);
+            updateInput();
+        }
+
+        function incrementMinutes() {
+            minutes = (minutes + 1) % 60;
+            document.getElementById('minutes').textContent = formatNumber(minutes);
+            updateInput();
+        }
+
+        function decrementMinutes() {
+            minutes = (minutes - 1 + 60) % 60;
+            document.getElementById('minutes').textContent = formatNumber(minutes);
+            updateInput();
+        }
+
+        function incrementSeconds() {
+            seconds = (seconds + 1) % 60;
+            document.getElementById('seconds').textContent = formatNumber(seconds);
+            updateInput();
+        }
+
+        function decrementSeconds() {
+            seconds = (seconds - 1 + 60) % 60;
+            document.getElementById('seconds').textContent = formatNumber(seconds);
+            updateInput();
+        }
+
+        function toggleAmPm() {
+            isAm = !isAm;
+            document.getElementById('amPmToggle').textContent = isAm ? 'AM' : 'PM';
+            updateInput();
+        }
+
+
+        updateInput();
+
+        document.querySelectorAll('input[name="occupation"]').forEach((elem) => {
+            elem.addEventListener("change", function(event) {
+                var specifyInput = document.getElementById("specify");
+                if (event.target.value === "Others") {
+                    specifyInput.disabled = false;
+                } else {
+                    specifyInput.disabled = true;
+                }
+            });
+        });
+
+
+    </script>
+</body>
+
+</html>
+
+<!-- few lines for github sake -->
