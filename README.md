@@ -1,4 +1,4 @@
-# Fusion Green Appointment Booking application
+# Appointment Booking application
 
 This app is developed using HTML, node and bootstrap.
 The aim of this application is to let users book appointments for enquiry of the medical instruments.
